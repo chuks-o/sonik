@@ -26,8 +26,8 @@ export async function uploadAudio({
   buffer,
   key,
   contentType = "audio/wav",
-}: UploadAudioOptions): Promise<void> {
-  await r2.send(
+}: UploadAudioOptions): Promise<object> {
+  return await r2.send(
     new PutObjectCommand({
       Bucket: env.R2_BUCKET_NAME,
       Key: key,
