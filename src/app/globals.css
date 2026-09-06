@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-mono-ui);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -128,5 +128,277 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+/* ==========================================================================
+   Marketing site theme
+   Direction: warm dark, editorial-technical. Near-black with a warm cast,
+   cream (never pure white) text, and a single amber accent used as signal —
+   live state, active selection, data — never as decoration.
+   Scoped to `.marketing`; `html[data-mk-theme="light"]` flips it to warm paper.
+   ========================================================================== */
+
+@theme inline {
+  --color-mk-bg: var(--mk-bg);
+  --color-mk-elevated: var(--mk-elevated);
+  --color-mk-surface: var(--mk-surface);
+  --color-mk-fg: var(--mk-fg);
+  --color-mk-muted: var(--mk-muted);
+  --color-mk-faint: var(--mk-faint);
+  --color-mk-border: var(--mk-border);
+  --color-mk-border-strong: var(--mk-border-strong);
+  --color-mk-accent: var(--mk-accent);
+  --color-mk-accent-soft: var(--mk-accent-soft);
+  --color-mk-accent-deep: var(--mk-accent-deep);
+  --color-mk-fill: var(--mk-fill);
+  --color-mk-fill-strong: var(--mk-fill-strong);
+  --color-mk-fill-faint: var(--mk-fill-faint);
+  --color-mk-track: var(--mk-track);
+  --color-mk-track-faint: var(--mk-track-faint);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono-ui: var(--font-mono-ui);
+}
+
+/* --- Dark (default) ------------------------------------------------------ */
+:root {
+  --mk-bg: oklch(0.142 0.021 62);
+  --mk-elevated: oklch(0.184 0.024 60);
+  --mk-surface: oklch(0.223 0.026 58);
+  --mk-fg: oklch(0.928 0.024 80);
+  --mk-muted: oklch(0.688 0.013 72);
+  --mk-faint: oklch(0.602 0.013 68);
+  --mk-border: oklch(0.93 0.012 75 / 10%);
+  --mk-border-strong: oklch(0.93 0.012 75 / 19%);
+  --mk-accent: oklch(0.715 0.163 52);
+  --mk-accent-soft: oklch(0.795 0.13 64);
+  --mk-accent-deep: oklch(0.6 0.172 44);
+
+  --mk-fill: oklch(0.93 0.012 75 / 4%);
+  --mk-fill-strong: oklch(0.93 0.012 75 / 7.5%);
+  --mk-fill-faint: oklch(0.93 0.012 75 / 1.8%);
+  --mk-track: oklch(0.93 0.012 75 / 17%);
+  --mk-track-faint: oklch(0.93 0.012 75 / 9%);
+
+  --mk-hairline: linear-gradient(
+    160deg,
+    oklch(1 0 0 / 16%),
+    oklch(1 0 0 / 3%) 40%,
+    transparent 70%
+  );
+  --mk-bloom: radial-gradient(
+    closest-side,
+    rgb(240 138 62 / 0.3),
+    rgb(200 92 32 / 0.1) 55%,
+    transparent 78%
+  );
+  --mk-glow: radial-gradient(
+    60% 60% at 50% 60%,
+    rgb(240 138 62 / 0.13),
+    transparent 70%
+  );
+  --mk-studio-shadow: rgb(20 12 6 / 0.75);
+  --mk-thumb-ring: rgb(240 138 62 / 0.2);
+}
+
+/* --- Light ---------------------------------------------------------------
+   Warm paper, not white. Cards sit below the page ground and the accent
+   deepens so it still passes as text. */
+html[data-mk-theme="light"] {
+  --mk-bg: oklch(0.968 0.013 84);
+  --mk-elevated: oklch(0.912 0.017 80);
+  --mk-surface: oklch(0.876 0.019 78);
+  --mk-fg: oklch(0.195 0.011 58);
+  --mk-muted: oklch(0.44 0.013 62);
+  --mk-faint: oklch(0.502 0.015 62);
+  --mk-border: oklch(0.24 0.02 58 / 14%);
+  --mk-border-strong: oklch(0.24 0.02 58 / 27%);
+  --mk-accent: oklch(0.575 0.168 44);
+  --mk-accent-soft: oklch(0.545 0.172 42);
+  --mk-accent-deep: oklch(0.465 0.155 40);
+
+  --mk-fill: oklch(0.24 0.02 58 / 4%);
+  --mk-fill-strong: oklch(0.24 0.02 58 / 8%);
+  --mk-fill-faint: oklch(0.24 0.02 58 / 2%);
+  --mk-track: oklch(0.24 0.02 58 / 19%);
+  --mk-track-faint: oklch(0.24 0.02 58 / 10%);
+
+  --mk-hairline: linear-gradient(
+    160deg,
+    oklch(1 0 0 / 95%),
+    oklch(1 0 0 / 45%) 40%,
+    transparent 70%
+  );
+  --mk-bloom: radial-gradient(
+    closest-side,
+    rgb(230 126 48 / 0.16),
+    rgb(230 126 48 / 0.06) 55%,
+    transparent 78%
+  );
+  --mk-glow: radial-gradient(
+    60% 60% at 50% 60%,
+    rgb(214 106 34 / 0.1),
+    transparent 70%
+  );
+  --mk-studio-shadow: rgb(90 52 20 / 0.16);
+  --mk-thumb-ring: rgb(214 106 34 / 0.18);
+}
+
+/* Paint the document canvas so overscroll and the area behind the fixed nav
+   stay in theme instead of flashing the app's white background. */
+html:has(.marketing),
+body:has(.marketing) {
+  background-color: var(--mk-bg);
+}
+
+.marketing {
+  background-color: var(--mk-bg);
+  color: var(--mk-fg);
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Headlines carry the display face; body copy never does. */
+.marketing h1,
+.marketing h2,
+.marketing h3,
+.marketing .font-display {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Ease the page ground between themes. Deliberately limited to this element:
+   a descendant selector here would outrank Tailwind's own `transition-*`
+   utilities and silently drop the transform transitions on cards and pills. */
+.marketing {
+  transition: background-color 0.3s ease;
+}
+
+/* Keep `color-scheme` on the marketing subtree: setting it on <html> would
+   follow a client-side navigation into the light product UI. */
+html[data-mk-theme="dark"] .marketing {
+  color-scheme: dark;
+}
+
+html[data-mk-theme="light"] .marketing {
+  color-scheme: light;
+}
+
+.marketing ::selection {
+  background-color: color-mix(in oklab, var(--mk-accent) 32%, transparent);
+  color: var(--mk-fg);
+}
+
+/* Mono is reserved for measurements — timecodes, durations, parameter values.
+   Anything with tabular figures. Never for words. */
+.mk-num {
+  font-family: var(--font-mono-ui), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Field names inside the product mockups. Sentence case at text weight: they
+   name a field, which needs no shouting. */
+.mk-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--mk-faint);
+}
+
+/* Section marks. The client chose this face and this grey; the shouting caps
+   and wide tracking were mine, and they are the commonest generated-page tell.
+   Sentence case at a readable size lets the face do the work instead. */
+.mk-eyebrow {
+  font-family: var(--font-eyebrow), ui-sans-serif, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  color: var(--mk-faint);
+}
+
+/* --- Scroll reveal ------------------------------------------------------- */
+/* Transform + opacity only, so reveals stay on the compositor. */
+.reveal {
+  opacity: 0;
+  /* 8-12px of travel reads as a fade settling into place; more than that reads
+     as a slide, which is the tell of a generic scroll-animation library. */
+  transform: translate3d(0, var(--reveal-y, 10px), 0) scale(var(--reveal-s, 1));
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+/* --- Ambient motion ------------------------------------------------------ */
+@keyframes mk-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes mk-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -3%, 0) scale(1.06); }
+}
+
+@keyframes mk-pulse-ring {
+  0% { opacity: 0.45; transform: scale(0.92); }
+  70% { opacity: 0; transform: scale(1.35); }
+  100% { opacity: 0; transform: scale(1.35); }
+}
+
+@keyframes mk-bar {
+  0%, 100% { transform: scaleY(0.28); }
+  50% { transform: scaleY(1); }
+}
+
+.mk-marquee-track {
+  animation: mk-marquee var(--marquee-duration, 42s) linear infinite;
+}
+
+.mk-drift {
+  animation: mk-drift var(--drift-duration, 18s) ease-in-out infinite;
+}
+
+/* Hairline gradient border used on cards and the demo studio. */
+.mk-hairline {
+  position: relative;
+}
+
+.mk-hairline::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--mk-hairline);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Respect the OS setting: kill ambient loops, keep content visible. */
+@media (prefers-reduced-motion: reduce) {
+  .marketing *,
+  .marketing *::before,
+  .marketing *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

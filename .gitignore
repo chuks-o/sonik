@@ -48,3 +48,8 @@ next-env.d.ts
 /scripts/system-voices
 
 chatterbox_tts.py
+
+/.claude/
+
+# Sentry Config File
+.env.sentry-build-plugin
