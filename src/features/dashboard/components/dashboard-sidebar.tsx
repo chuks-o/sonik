@@ -66,8 +66,8 @@ function NavSection({ label, items, pathname }: NavSectionProps) {
                 asChild={!!item.url}
                 isActive={
                   item.url
-                    ? item.url === "/"
-                      ? pathname === "/"
+                    ? item.url === "/dashboard"
+                      ? pathname === "/dashboard"
                       : pathname.startsWith(item.url)
                     : false
                 }
@@ -103,17 +103,17 @@ export function DashboardSidebar() {
   const mainMenuItems: MenuItem[] = [
     {
       title: "Dashboard",
-      url: "/",
+      url: "/dashboard",
       icon: Home,
     },
     {
       title: "Explore voices",
-      url: "/voices",
+      url: "/dashboard/voices",
       icon: LayoutGrid,
     },
     {
       title: "Text to speech",
-      url: "/text-to-speech",
+      url: "/dashboard/text-to-speech",
       icon: AudioLines,
     },
     {
