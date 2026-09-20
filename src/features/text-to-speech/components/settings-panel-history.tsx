@@ -46,7 +46,7 @@ export function SettingsPanelHistory() {
     <div className="flex flex-col gap-1 p-2">
       {generations.map((generation) => (
         <Link
-          href={`/dashboard/text-to-speech/${generation.id}`}
+          href={`/app/text-to-speech/${generation.id}`}
           key={generation.id}
           className="flex items-center gap-3 rounded-lg p-3 text-left transition-colors hover:bg-muted"
         >

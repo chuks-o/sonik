@@ -37,7 +37,7 @@ export const VOICE_SAMPLES: VoiceSample[] = [
     accent: "American",
     category: "Advertising",
     script:
-      "Every product has a voice. Sonik makes sure yours sounds like it was recorded in a studio, not generated in a browser tab.",
+      "Every product has a voice. Sonic makes sure yours sounds like it was recorded in a studio, not generated in a browser tab.",
     params: { temperature: 0.7, topP: 0.9, topK: 50, repetitionPenalty: 1.2 },
   },
   {
@@ -142,7 +142,7 @@ export const CAPABILITIES: Capability[] = [
     id: "voice-cloning",
     name: "Voice Cloning",
     title: "Your own voice, on tap",
-    body: "Upload a few minutes of clean reference audio and Sonik builds a reusable voice your whole workspace can generate against.",
+    body: "Upload a few minutes of clean reference audio and Sonic builds a reusable voice your whole workspace can generate against.",
     icon: "Copy",
     span: "lg:col-span-5",
   },
@@ -184,7 +184,7 @@ export const SAFETY: SafetyPillar[] = [
   },
   {
     title: "Provenance",
-    body: "Generated audio should be identifiable as generated. Every file Sonik produces stays traceable back to the generation that made it.",
+    body: "Generated audio should be identifiable as generated. Every file Sonic produces stays traceable back to the generation that made it.",
   },
   {
     title: "Accountability",
@@ -279,7 +279,7 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: "What makes the output different from a generic TTS API?",
-    a: "Most APIs give you a voice and a play button. Sonik exposes the sampling parameters behind the model, so you can direct the delivery the way you would direct a session musician, then keep the exact settings that worked.",
+    a: "Most APIs give you a voice and a play button. Sonic exposes the sampling parameters behind the model, so you can direct the delivery the way you would direct a session musician, then keep the exact settings that worked.",
   },
   {
     q: "Can I use generated audio commercially?",

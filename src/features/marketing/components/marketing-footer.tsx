@@ -26,7 +26,7 @@ const COLUMNS = [
     links: [
       { label: "Sign in", href: "/sign-in" },
       { label: "Start free", href: "/sign-up" },
-      { label: "Contact", href: "mailto:hello@sonik.app" },
+      { label: "Contact", href: "mailto:hello@sonic.app" },
     ],
   },
   {
@@ -48,7 +48,7 @@ export function MarketingFooter() {
             <div className="flex items-center gap-2">
               <Image src="/logo.svg" alt="" width={20} height={24} />
               <span className="text-[15px] font-semibold tracking-tight">
-                Sonik
+                Sonic
               </span>
             </div>
             <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-mk-faint">
@@ -79,7 +79,7 @@ export function MarketingFooter() {
 
         <div className="mt-12 border-t border-mk-border pt-6">
           <p className="text-[12px] text-mk-faint">
-            &copy; {new Date().getFullYear()} Sonik. All rights reserved.
+            &copy; {new Date().getFullYear()} Sonic. All rights reserved.
           </p>
 
         </div>

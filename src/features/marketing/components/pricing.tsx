@@ -52,7 +52,7 @@ export function Pricing() {
                   </p>
 
                   <a
-                    href={tier.name === "Label" ? "mailto:hello@sonik.app" : "/sign-up"}
+                    href={tier.name === "Label" ? "mailto:hello@sonic.app" : "/sign-up"}
                     className={cn(
                       "mt-6 block rounded-xl px-4 py-3 text-center text-[14px] font-medium transition-transform duration-200 hover:scale-[1.02] active:scale-95",
                       tier.featured

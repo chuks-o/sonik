@@ -52,7 +52,7 @@ export function MarketingNav() {
           className="flex items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:ring-mk-accent-soft focus-visible:outline-none"
         >
           <Image src="/logo.svg" alt="" width={22} height={26} priority />
-          <span className="text-lg font-semibold tracking-tight">Sonik</span>
+          <span className="text-lg font-semibold tracking-tight">Sonic</span>
         </Link>
 
         <div className="hidden items-center gap-1 md:flex">
@@ -68,7 +68,7 @@ export function MarketingNav() {
         </div>
 
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <AuthLink
             href="/sign-in"
             className="rounded-lg px-3 py-2 text-[13px] text-mk-muted transition-colors hover:text-mk-fg"
@@ -84,15 +84,15 @@ export function MarketingNav() {
         </div>
 
         <div className="flex items-center gap-1.5 md:hidden">
-          <ThemeToggle />
+          {/* <ThemeToggle /> */}
           <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-label={open ? "Close menu" : "Open menu"}
-          className="-mr-2 flex size-10 items-center justify-center rounded-lg text-mk-muted"
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+            className="-mr-2 flex size-10 items-center justify-center rounded-lg text-mk-muted"
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
         </div>
       </nav>

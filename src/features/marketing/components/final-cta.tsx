@@ -22,7 +22,7 @@ export function FinalCta() {
             </h2>
             <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-pretty text-mk-muted">
               Sign up, paste a paragraph, pick a voice. The free tier is enough
-              to know whether Sonik belongs in your pipeline.
+              to know whether Sonic belongs in your pipeline.
             </p>
             <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <AuthLink

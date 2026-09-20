@@ -7,20 +7,20 @@ import { MarketingFooter } from "@/features/marketing/components/marketing-foote
 
 export const metadata: Metadata = {
   title: {
-    absolute: "Sonik — Studio-grade text to speech, with the controls left on",
+    absolute: "Sonic — Studio-grade text to speech, with the controls left on",
   },
   description:
-    "Sonik turns scripts into studio-grade speech and exposes the sampling controls behind the model, so you can direct the performance instead of regenerating and hoping.",
+    "Sonic turns scripts into studio-grade speech and exposes the sampling controls behind the model, so you can direct the performance instead of regenerating and hoping.",
   openGraph: {
-    title: "Sonik — Studio-grade text to speech",
+    title: "Sonic — Studio-grade text to speech",
     description:
       "Generate speech with real direction: temperature, top-p, top-k and repetition penalty on every take. Clone voices, keep the history, ship over the API.",
-    siteName: "Sonik",
+    siteName: "Sonic",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Sonik — Studio-grade text to speech",
+    title: "Sonic — Studio-grade text to speech",
     description:
       "Direct the performance instead of rolling the dice on every generation.",
   },

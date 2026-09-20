@@ -31,7 +31,7 @@ export default function AuthLayout({
           >
             <Image src="/logo.svg" alt="" width={22} height={26} priority />
             <span className="text-lg font-semibold tracking-tight text-[var(--auth-fg)]">
-              Sonik
+              Sonic
             </span>
           </Link>
         </div>
@@ -43,7 +43,7 @@ export default function AuthLayout({
 
       <footer className="relative z-10 px-5 pb-8 sm:px-8">
         <p className="text-center text-[12.5px] text-[var(--auth-faint)]">
-          &copy; {new Date().getFullYear()} Sonik
+          &copy; {new Date().getFullYear()} Sonic
         </p>
       </footer>
     </div>

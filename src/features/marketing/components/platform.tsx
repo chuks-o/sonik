@@ -27,31 +27,31 @@ const SUPPORTING: {
   icon: LucideIcon;
   Visual: () => React.ReactElement;
 }[] = [
-  {
-    id: "voice-generator",
-    name: "AI Voice Generator",
-    title: "Describe a voice into existence",
-    body: "Write the voice you need in plain language and get back candidates that have never belonged to anyone, free of likeness questions.",
-    icon: Sparkles,
-    Visual: VoiceGeneratorVisual,
-  },
-  {
-    id: "music",
-    name: "Music",
-    title: "Scores and beds from a sentence",
-    body: "Generate a cue that fits the edit, then pull the stems apart to mix it against the voiceover rather than under it.",
-    icon: Music,
-    Visual: MusicVisual,
-  },
-  {
-    id: "speech-to-text",
-    name: "Speech to Text",
-    title: "Transcripts that know who spoke",
-    body: "Word-level timings and speaker labels, so a recording becomes something you can search, caption and cut against.",
-    icon: FileText,
-    Visual: SpeechToTextVisual,
-  },
-];
+    {
+      id: "voice-generator",
+      name: "AI Voice Generator",
+      title: "Describe a voice into existence",
+      body: "Write the voice you need in plain language and get back candidates that have never belonged to anyone, free of likeness questions.",
+      icon: Sparkles,
+      Visual: VoiceGeneratorVisual,
+    },
+    {
+      id: "music",
+      name: "Music",
+      title: "Scores and beds from a sentence",
+      body: "Generate a cue that fits the edit, then pull the stems apart to mix it against the voiceover rather than under it.",
+      icon: Music,
+      Visual: MusicVisual,
+    },
+    {
+      id: "speech-to-text",
+      name: "Speech to Text",
+      title: "Transcripts that know who spoke",
+      body: "Word-level timings and speaker labels, so a recording becomes something you can search, caption and cut against.",
+      icon: FileText,
+      Visual: SpeechToTextVisual,
+    },
+  ];
 
 export function Platform() {
   return (
@@ -60,7 +60,7 @@ export function Platform() {
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <SectionHeading
             title="Six ways to make audio. One engine."
-            body="Speech is where Sonik starts, not where it stops. Generation, cloning, translation, music and transcription all run on the same research, so a voice you build in one place behaves the same everywhere else."
+            body="Speech is where Sonic starts, not where it stops. Generation, cloning, translation, music and transcription all run on the same research, so a voice you build in one place behaves the same everywhere else."
           />
         </div>
       </section>
@@ -91,7 +91,7 @@ export function Platform() {
         id="voice-cloning"
         label="Voice Cloning"
         title="Your own voice, on tap"
-        body="Record a few minutes of clean reference audio and Sonik builds a reusable voice your whole workspace can generate against — the same person, available long after the session ends."
+        body="Record a few minutes of clean reference audio and Sonic builds a reusable voice your whole workspace can generate against — the same person, available long after the session ends."
         flip
         points={[
           {

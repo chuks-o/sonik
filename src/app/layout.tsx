@@ -9,6 +9,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "@/trpc/client";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 // Product UI keeps Inter; the marketing site deliberately does not use it.
 // `preload: false` keeps the marketing page from fetching a face it never
@@ -51,8 +52,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Sonik",
-    template: "%s | Sonik",
+    default: "Sonic",
+    template: "%s | Sonic",
   },
   description: "Voice text-to-speech and speech-to-text application",
 };
@@ -71,7 +72,9 @@ export default function RootLayout({
           <body
             className={`${inter.variable} ${schibsted.variable} ${syne.variable} ${jetbrainsMono.variable} antialiased`}
           >
-            {children}
+            <NuqsAdapter>
+              {children}
+            </NuqsAdapter>
             <Toaster />
           </body>
         </html>

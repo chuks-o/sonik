@@ -11,7 +11,7 @@ import { Waveform } from "@/features/marketing/components/waveform";
 import { VoicePortrait } from "@/features/marketing/components/voice-portrait";
 
 /** Lets other sections hand a voice to the player without shared state. */
-export const SELECT_VOICE_EVENT = "sonik:select-voice";
+export const SELECT_VOICE_EVENT = "sonic:select-voice";
 
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds)) return "0:00";
@@ -186,7 +186,7 @@ export function DemoStudio() {
           <span className="size-2 rounded-full bg-mk-track" />
         </div>
         <p className="mk-label">
-          Sonik studio
+          Sonic studio
         </p>
         <div className="flex items-center gap-1.5">
           <span

@@ -33,7 +33,7 @@ export function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-[15.5px] leading-relaxed text-pretty text-mk-muted sm:text-[17px]">
-            Most tools hand you a voice and a play button. Sonik gives you the
+            Most tools hand you a voice and a play button. Sonic gives you the
             sampling controls behind the model, so you direct the read instead
             of regenerating and hoping.
           </p>

@@ -103,17 +103,17 @@ export function DashboardSidebar() {
   const mainMenuItems: MenuItem[] = [
     {
       title: "Dashboard",
-      url: "/dashboard",
+      url: "/app",
       icon: Home,
     },
     {
       title: "Explore voices",
-      url: "/dashboard/voices",
+      url: "/app/voices",
       icon: LayoutGrid,
     },
     {
       title: "Text to speech",
-      url: "/dashboard/text-to-speech",
+      url: "/app/text-to-speech",
       icon: AudioLines,
     },
     {
@@ -149,13 +149,13 @@ export function DashboardSidebar() {
           className="flex items-center gap-2 pl-1 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:pl-0">
           <Image
             src="/logo.svg"
-            alt="Sonik Logo"
+            alt="Sonic Logo"
             width={24}
             height={24}
             className="rounded-sm"
           />
           <span className="group-data-[collapsible=icon]:hidden font-semibold text-lg tracking-tighter text-foreground">
-            Sonik
+            Sonic
           </span>
           <SidebarTrigger className="ml-auto lg:hidden" />
         </div>
