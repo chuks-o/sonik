@@ -2,12 +2,12 @@
 
 These six clips power the demo player in the hero (`DemoStudio`).
 
-## ⚠️ These are placeholders, not Sonik output
+## ⚠️ These are placeholders, not Sonic output
 
 They were generated on a Mac with the built-in `say` command so the landing
 page would have real, playable speech during development. **They are not
-produced by Sonik's model, and the landing page presents them as if they were.**
-Replace them with genuine Sonik generations before the site goes live.
+produced by Sonic's model, and the landing page presents them as if they were.**
+Replace them with genuine Sonic generations before the site goes live.
 
 ## Replacing them
 

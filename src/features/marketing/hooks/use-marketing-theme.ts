@@ -4,8 +4,8 @@ import { useCallback, useSyncExternalStore } from "react";
 
 export type MarketingTheme = "light" | "dark";
 
-export const THEME_STORAGE_KEY = "sonik-theme";
-const CHANGE_EVENT = "sonik:theme-change";
+export const THEME_STORAGE_KEY = "sonic-theme";
+const CHANGE_EVENT = "sonic:theme-change";
 
 /**
  * Runs before the page paints so the first frame is already in the right
@@ -17,7 +17,7 @@ export const THEME_INIT_SCRIPT = `(function(){try{var s=localStorage.getItem(${J
 )});var t=(s==="light"||s==="dark")?s:(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.dataset.mkTheme=t;}catch(e){document.documentElement.dataset.mkTheme="dark";}})()`;
 
 function currentTheme(): MarketingTheme {
-  return document.documentElement.dataset.mkTheme === "light" ? "light" : "dark";
+  return document.documentElement.dataset.mkTheme === "dark" ? "dark" : "light";
 }
 
 function subscribe(onChange: () => void) {
