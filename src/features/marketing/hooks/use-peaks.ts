@@ -2,6 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { placeholderPeaks } from "@/features/marketing/lib/peaks";
+
+export { placeholderPeaks };
+
 /**
  * Decoded peak arrays shared across component instances. Keyed by URL *and*
  * bucket count, since the resolution changes with viewport width.
@@ -10,30 +14,6 @@ const cache = new Map<string, number[]>();
 const inflight = new Map<string, Promise<number[]>>();
 
 const keyFor = (url: string, buckets: number) => `${url}@${buckets}`;
-
-/**
- * Deterministic stand-in waveform, rendered instantly so the studio never shows
- * an empty box or shifts layout while the real audio is being decoded.
- */
-export function placeholderPeaks(seed: string, buckets: number): number[] {
-  let h = 2166136261;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-
-  const peaks: number[] = [];
-  for (let i = 0; i < buckets; i++) {
-    h ^= h << 13;
-    h ^= h >>> 17;
-    h ^= h << 5;
-    const r = ((h >>> 0) % 1000) / 1000;
-    // Taper the ends so it reads as an utterance rather than a noise block.
-    const envelope = Math.sin((i / buckets) * Math.PI) ** 0.6;
-    peaks.push(0.18 + r * 0.72 * envelope);
-  }
-  return peaks;
-}
 
 async function decodePeaks(url: string, buckets: number): Promise<number[]> {
   const response = await fetch(url);

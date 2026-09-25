@@ -9,7 +9,7 @@ export const quickActions: QuickAction[] = [
   {
     title: "Narrate a Story",
     description: "Bring characters to life with expressive AI narration",
-    gradient: "from-cyan-400 to-cyan-50",
+    gradient: "from-amber-400 to-amber-50",
     href: "/app/text-to-speech?text=In a village tucked between mist-covered mountains, there lived an old clockmaker whose clocks never told the right time — but they always told the truth. One rainy evening, a stranger walked in and asked for a clock that could show him his future.",
   },
   {
@@ -39,7 +39,7 @@ export const quickActions: QuickAction[] = [
   {
     title: "Guide a Meditation",
     description: "Craft soothing, calming audio for wellness content",
-    gradient: "from-lime-400 to-lime-100",
+    gradient: "from-stone-400 to-stone-100",
     href: "/app/text-to-speech?text=Close your eyes and take a deep breath in. Hold it gently... and release. Feel the weight of the day slowly melting away. With each breath, you're sinking deeper into calm. There is nowhere else you need to be. Just here. Just now. Breathe in peace, breathe out tension.",
   },
 ];

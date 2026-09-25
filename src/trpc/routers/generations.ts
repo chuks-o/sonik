@@ -1,8 +1,12 @@
 import * as Sentry from "@sentry/nextjs";
 import { z } from "zod";
-// import { polar } from "@/lib/polar";
-// import { env } from "@/lib/env";
 import { TRPCError } from "@trpc/server";
+import { BillingError } from "@/features/billing/lib/errors";
+import { assertCanSpend } from "@/features/billing/server/entitlement";
+import {
+  countUnits,
+  recordTextToSpeechUsage,
+} from "@/features/billing/server/metering";
 import { chatterbox } from "@/lib/chatterbox-client";
 import { prisma } from "@/lib/db";
 import { uploadAudio } from "@/lib/r2";
@@ -56,27 +60,27 @@ export const generationsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      // Check for active subscription before generation
-      // try {
-      //   const customerState = await polar.customers.getStateExternal({
-      //     externalId: ctx.orgId,
-      //   });
-      //   const hasActiveSubscription =
-      //     (customerState.activeSubscriptions ?? []).length > 0;
-      //   if (!hasActiveSubscription) {
-      //     throw new TRPCError({
-      //       code: "FORBIDDEN",
-      //       message: "SUBSCRIPTION_REQUIRED",
-      //     });
-      //   }
-      // } catch (err) {
-      //   if (err instanceof TRPCError) throw err;
-      //   // Customer doesn't exist in Polar yet -> no subscription
-      //   throw new TRPCError({
-      //     code: "FORBIDDEN",
-      //     message: "SUBSCRIPTION_REQUIRED",
-      //   });
-      // }
+      // Characters are the billable unit, so the cost of this request is
+      // known before any work starts.
+      const units = countUnits(input.text);
+
+      try {
+        await assertCanSpend(ctx.orgId, units);
+      } catch (error) {
+        if (error instanceof BillingError) {
+          throw new TRPCError({
+            // An outage is ours, not the caller's — saying FORBIDDEN would
+            // send the UI into an upsell over a Polar timeout.
+            code:
+              error.detail.code === "BILLING_UNAVAILABLE"
+                ? "INTERNAL_SERVER_ERROR"
+                : "FORBIDDEN",
+            message: error.detail.code,
+            cause: error,
+          });
+        }
+        throw error;
+      }
 
       const voice = await prisma.voice.findUnique({
         where: {
@@ -211,21 +215,13 @@ export const generationsRouter = createTRPCRouter({
         });
       }
 
-      // Ingest usage event to Polar (fire-and-forget, don't block response)
-      // polar.events
-      //   .ingest({
-      //     events: [
-      //       {
-      //         name: env.POLAR_METER_TTS_GENERATION,
-      //         externalCustomerId: ctx.orgId,
-      //         metadata: { [env.POLAR_METER_TTS_PROPERTY]: input.text.length },
-      //         timestamp: new Date(),
-      //       },
-      //     ],
-      //   })
-      //   .catch(() => {
-      //     Silently fail - don't break the user experience for metering errors
-      //   });
+      // Awaited, so the balance has moved before the next request reads it.
+      // Reporting failures are captured to Sentry rather than swallowed.
+      await recordTextToSpeechUsage({
+        orgId: ctx.orgId,
+        units,
+        generationId,
+      });
 
       return {
         id: generationId,

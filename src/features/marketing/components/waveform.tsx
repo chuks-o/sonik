@@ -44,7 +44,7 @@ export const Waveform = forwardRef<HTMLDivElement, WaveformProps>(
             className={cn(
               "min-h-[2px] flex-1 rounded-full transition-[background-color] duration-300",
               played
-                ? "bg-gradient-to-b from-mk-accent-soft to-mk-accent"
+                ? "bg-gradient-to-b from-mk-brand-soft to-mk-brand"
                 : pending
                   ? "bg-mk-track-faint"
                   : "bg-mk-track",

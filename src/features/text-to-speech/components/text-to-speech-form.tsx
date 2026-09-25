@@ -4,11 +4,14 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { formOptions } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { useTRPC } from "@/trpc/client";
 import { useAppForm } from "@/hooks/use-app-form";
-// import { useCheckout } from "@/features/billing/hooks/use-checkout";
+import {
+  billingDetailFrom,
+  toastBillingError,
+} from "@/features/billing/lib/handle-billing-error";
 
 const ttsFormSchema = z.object({
   text: z.string().min(1, "Please enter some text"),
@@ -43,11 +46,10 @@ export function TextToSpeechForm({
 }) {
   const trpc = useTRPC();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const createMutation = useMutation(
     trpc.generations.create.mutationOptions({}),
   );
-
-  // const { checkout } = useCheckout();
 
   const form = useAppForm({
     ...ttsFormOptions,
@@ -67,24 +69,24 @@ export function TextToSpeechForm({
           repetitionPenalty: value.repetitionPenalty,
         });
 
+        // The sidebar meter is showing a balance from before this spend.
+        queryClient.invalidateQueries({
+          queryKey: trpc.billing.getEntitlement.queryKey(),
+        });
+
         toast.success("Audio generated successfully!");
-        router.push(`/text-to-speech/${data.id}`);
+        router.push(`/app/text-to-speech/${data?.id}`);
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to generate audio";
+        const billing = billingDetailFrom(error);
 
-        toast.error(message);
+        if (billing) {
+          toastBillingError(billing, () => router.push("/pricing"));
+          return;
+        }
 
-        // if (message === "SUBSCRIPTION_REQUIRED") {
-        //   toast.error("Subscription required", {
-        //     action: {
-        //       label: "Subscribe",
-        //       onClick: () => checkout(),
-        //     },
-        //   });
-        // } else {
-        //   toast.error(message);
-        // }
+        toast.error(
+          error instanceof Error ? error.message : "Failed to generate audio",
+        );
       }
     },
   });

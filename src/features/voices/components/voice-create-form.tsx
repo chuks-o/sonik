@@ -249,10 +249,16 @@ function LanguageCombobox({
   );
 };
 
+import { BillingError } from "@/features/billing/lib/errors";
+import {
+  billingDetailFromResponse,
+  toastBillingError,
+} from "@/features/billing/lib/handle-billing-error";
+
 interface VoiceCreateFormProps {
   scrollable?: boolean;
   footer?: (submit: React.ReactNode) => React.ReactNode;
-  onError?: (message: string) => void;
+  onError?: (error: unknown) => void;
 };
 
 export function VoiceCreateForm({
@@ -295,6 +301,9 @@ export function VoiceCreateForm({
 
       if (!response.ok) {
         const body = await response.json();
+        const billing = billingDetailFromResponse(body);
+
+        if (billing) throw new BillingError(billing);
         throw new Error(body.error ?? "Failed to create voice");
       }
 
@@ -327,16 +336,27 @@ export function VoiceCreateForm({
         queryClient.invalidateQueries({
           queryKey: trpc.voices.getAll.queryKey(),
         });
+        queryClient.invalidateQueries({
+          queryKey: trpc.billing.getEntitlement.queryKey(),
+        });
         form.reset();
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Failed to create voice";
-
         if (onError) {
-          onError(message);
-        } else {
-          toast.error(message);
+          onError(error);
+          return;
         }
+
+        const billing =
+          error instanceof BillingError ? error.detail : null;
+
+        if (billing) {
+          toastBillingError(billing);
+          return;
+        }
+
+        toast.error(
+          error instanceof Error ? error.message : "Failed to create voice",
+        );
       }
     },
   });

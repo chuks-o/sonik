@@ -93,7 +93,8 @@ export function VoiceCard({ voice }: VoiceCardProps) {
         <div className="flex items-center gap-1.5 line-clamp-1 text-sm font-medium tracking-tight">
           {voice.name}
           <span className="size-1 shrink-0 rounded-full bg-muted-foreground/50" />
-          <span className="text-[#327c88]">
+          {/* The logo's gold, darkened to #B4480D so small text clears 4.5:1. */}
+          <span className="text-[#B4480D]">
             {VOICE_CATEGORY_LABELS[voice.category]}
           </span>
         </div>

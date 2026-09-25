@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/pricing",
 ]);
 
 const isOrgSelectionRoute = createRouteMatcher(["/org-selection(.*)"]);

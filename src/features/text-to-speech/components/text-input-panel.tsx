@@ -7,14 +7,13 @@ import { SettingsDrawer } from "./settings-drawer";
 import { HistoryDrawer } from "./history-drawer";
 import { VoiceSelectorButton } from "./voice-selector-button";
 
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { useTypedAppFormContext } from "@/hooks/use-app-form";
 
-import {
-  COST_PER_UNIT,
-  TEXT_MAX_LENGTH
-} from "@/features/text-to-speech/data/constants";
+import { TEXT_MAX_LENGTH } from "@/features/text-to-speech/data/constants";
+import { useEntitlement } from "@/features/billing/hooks/use-entitlement";
 import { ttsFormOptions } from "./text-to-speech-form";
 import { GenerateButton } from "./generate-button";
 import { PromptSuggestions } from "./prompt-suggestions";
@@ -22,9 +21,16 @@ import { PromptSuggestions } from "./prompt-suggestions";
 export function TextInputPanel() {
   const form = useTypedAppFormContext(ttsFormOptions);
 
+  const { balance, canSpend, isPending: isBalancePending } = useEntitlement();
+
   const text = useSelector(form.store, (s) => s.values.text);
   const isSubmitting = useSelector(form.store, (s) => s.isSubmitting);
   const isValid = useSelector(form.store, (s) => s.isValid);
+
+  // The request is priced in characters, so whether it will be refused is
+  // known here — no need to round-trip and explain a 403.
+  const fits = canSpend(text.length);
+  const isExhausted = !isBalancePending && balance <= 0;
 
   return (
     <div className="flex h-full min-h-0 flex-col flex-1">
@@ -59,19 +65,28 @@ export function TextInputPanel() {
             className="w-full"
             disabled={isSubmitting}
             isSubmitting={isSubmitting}
+            needsUpgrade={isExhausted || !fits}
             onSubmit={() => form.handleSubmit()}
           />
         </div>
         {/* Desktop layout */}
         {text.length > 0 ? (
           <div className="hidden items-center justify-between lg:flex">
-            <Badge variant="outline" className="gap-1.5 border-dashed">
-              <Coins className="size-3 text-chart-5" />
+            <Badge
+              variant="outline"
+              className={cn(
+                "gap-1.5 border-dashed",
+                !fits && "border-destructive/50 text-destructive",
+              )}
+            >
+              <Coins
+                className={cn("size-3", fits ? "text-chart-5" : "text-destructive")}
+              />
               <span className="text-xs">
                 <span className="tabular-nums">
-                  ${(text.length * COST_PER_UNIT).toFixed(4)}
-                </span>&nbsp;
-                estimated
+                  {balance.toLocaleString()}
+                </span>
+                &nbsp;characters left
               </span>
             </Badge>
             <div className="flex items-center gap-3">
@@ -85,6 +100,7 @@ export function TextInputPanel() {
                 size="sm"
                 disabled={isSubmitting || !isValid}
                 isSubmitting={isSubmitting}
+                needsUpgrade={isExhausted || !fits}
                 onSubmit={() => form.handleSubmit()}
               />
             </div>

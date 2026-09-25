@@ -1,87 +1,49 @@
 import Image from "next/image";
+import Link from "next/link";
 
-const COLUMNS = [
-  {
-    title: "Platform",
-    links: [
-      { label: "Text to Speech", href: "#text-to-speech" },
-      { label: "AI Voice Generator", href: "#voice-generator" },
-      { label: "Voice Cloning", href: "#voice-cloning" },
-      { label: "Dubbing", href: "#dubbing" },
-      { label: "Music", href: "#music" },
-      { label: "Speech to Text", href: "#speech-to-text" },
-    ],
-  },
-  {
-    title: "Product",
-    links: [
-      { label: "Demo", href: "#demo" },
-      { label: "Voices", href: "#voices" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "Sign in", href: "/sign-in" },
-      { label: "Start free", href: "/sign-up" },
-      { label: "Contact", href: "mailto:hello@sonic.app" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Voice cloning policy", href: "#" },
-    ],
-  },
+const LINKS = [
+  { label: "Product", href: "/#product" },
+  { label: "Voices", href: "/#voices" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/#faq" },
+  { label: "Contact", href: "mailto:hello@sonic.app" },
 ];
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-mk-border">
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.2fr)_repeat(4,minmax(0,1fr))]">
-          <div>
-            <div className="flex items-center gap-2">
-              <Image src="/logo.svg" alt="" width={20} height={24} />
-              <span className="text-[15px] font-semibold tracking-tight">
-                Sonic
-              </span>
-            </div>
-            <p className="mt-3 max-w-xs text-[13px] leading-relaxed text-mk-faint">
-              Studio-grade speech generation with the controls left switched on.
-            </p>
-          </div>
-
-          {COLUMNS.map((column) => (
-            <div key={column.title}>
-              <h3 className="mk-label">
-                {column.title}
-              </h3>
-              <ul className="mt-4 space-y-2.5">
-                {column.links.map((link) => (
-                  <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-[13px] text-mk-muted transition-colors hover:text-mk-fg"
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+    <footer className="px-3 pb-3 sm:px-6 sm:pb-6">
+      <div className="mx-auto max-w-7xl rounded-[36px] bg-mk-surface px-6 pt-16 pb-8 sm:px-10">
+        <div className="flex flex-col items-center text-center">
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/logo.svg" alt="" width={22} height={26} />
+            <span className="text-[17px] font-semibold tracking-tight text-mk-fg">
+              Sonic
+            </span>
+          </Link>
+          <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-mk-muted">
+            Text to speech, voice cloning, dubbing and transcription, on one
+            set of voices.
+          </p>
         </div>
 
-        <div className="mt-12 border-t border-mk-border pt-6">
-          <p className="text-[12px] text-mk-faint">
-            &copy; {new Date().getFullYear()} Sonic. All rights reserved.
+        <div className="mt-14 flex flex-col-reverse items-center justify-between gap-6 border-t border-mk-border pt-7 sm:flex-row">
+          <p className="text-[13.5px] text-mk-faint">
+            &copy; {new Date().getFullYear()} Sonic
           </p>
-
+          <nav aria-label="Footer">
+            <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2">
+              {LINKS.map((link) => (
+                <li key={link.label}>
+                  <a
+                    href={link.href}
+                    className="text-[14px] text-mk-muted transition-colors hover:text-mk-fg"
+                  >
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
       </div>
     </footer>

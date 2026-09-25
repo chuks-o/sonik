@@ -21,7 +21,12 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { VoiceCreateForm } from "./voice-create-form";
 import { Button } from "@/components/ui/button";
-// import { useCheckout } from "@/features/billing/hooks/use-checkout";
+import { useRouter } from "next/navigation";
+import { BillingError } from "@/features/billing/lib/errors";
+import {
+  billingDetailFrom,
+  toastBillingError,
+} from "@/features/billing/lib/handle-billing-error";
 import { useCallback } from "react";
 import { toast } from "sonner";
 
@@ -38,23 +43,24 @@ export function VoiceCreateDialog({
 }: VoiceCreateDialogProps) {
   const isMobile = useIsMobile();
 
-  // const { checkout } = useCheckout();
+  const router = useRouter();
 
-  // const handleError = useCallback(
-  //   (message: string) => {
-  //     if (message === "SUBSCRIPTION_REQUIRED") {
-  //       toast.error("Subscription required", {
-  //         action: {
-  //           label: "Subscribe",
-  //           onClick: () => checkout(),
-  //         },
-  //       });
-  //     } else {
-  //       toast.error(message);
-  //     }
-  //   },
-  //   [checkout],
-  // );
+  const handleError = useCallback(
+    (error: unknown) => {
+      const billing =
+        error instanceof BillingError ? error.detail : billingDetailFrom(error);
+
+      if (billing) {
+        toastBillingError(billing, () => router.push("/pricing"));
+        return;
+      }
+
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create voice",
+      );
+    },
+    [router],
+  );
 
   if (isMobile) {
     return (
@@ -70,7 +76,7 @@ export function VoiceCreateDialog({
           </DrawerHeader>
           <VoiceCreateForm
             scrollable
-            // onError={handleError}
+            onError={handleError}
             footer={(submit) => (
               <DrawerFooter>
                 {submit}
@@ -95,9 +101,7 @@ export function VoiceCreateDialog({
             Upload or record an audio sample to add a new voice to your library.
           </DialogDescription>
         </DialogHeader>
-        <VoiceCreateForm
-        // onError={handleError} 
-        />
+        <VoiceCreateForm onError={handleError} />
       </DialogContent>
     </Dialog>
   );

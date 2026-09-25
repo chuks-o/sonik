@@ -39,8 +39,8 @@ export function useWaveSurfer({
     const ws = WaveSurfer.create({
       container: containerRef.current,
       waveColor: "#96999D", // matches --muted-foreground
-      progressColor: "#4A8A9A", // matches --chart-1 (teal-cyan)
-      cursorColor: "#4A8A9A",
+      progressColor: "#F08A3E", // the logo's gold: gold marks the voice
+      cursorColor: "#D2661E", // the logo's deeper gold, so the playhead reads
       cursorWidth: 2,
       barWidth: 2,
       barGap: 2,

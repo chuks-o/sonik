@@ -1,9 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { parseBuffer } from "music-metadata";
 import { z } from "zod";
-// import { polar } from "@/lib/polar";
-// import { env } from "@/lib/env";
 import { prisma } from "@/lib/db";
+import { BillingError } from "@/features/billing/lib/errors";
+import { assertCanCloneVoice } from "@/features/billing/server/entitlement";
+import { recordVoiceCreationUsage } from "@/features/billing/server/metering";
 import { uploadAudio } from "@/lib/r2";
 import { VOICE_CATEGORIES } from "@/features/voices/data/voice-categories";
 import type { VoiceCategory } from "@/generated/prisma/client";
@@ -25,19 +26,20 @@ export async function POST(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-    // Check for active subscription before voice creation
+  // Cloning is a paid-plan capability. This is a route handler rather than a
+  // tRPC procedure, so the billing detail is returned as JSON under the same
+  // `billing` key the tRPC errorFormatter uses and the client reads either
+  // shape identically.
   try {
-    // const customerState = await polar.customers.getStateExternal({
-    //   externalId: orgId,
-    // });
-    // const hasActiveSubscription =
-    //   (customerState.activeSubscriptions ?? []).length > 0;
-    // if (!hasActiveSubscription) {
-    //   return Response.json({ error: "SUBSCRIPTION_REQUIRED" }, { status: 403 });
-    // }
-  } catch {
-    // Customer doesn't exist in Polar yet -> no subscription
-    return Response.json({ error: "SUBSCRIPTION_REQUIRED" }, { status: 403 });
+    await assertCanCloneVoice(orgId);
+  } catch (error) {
+    if (error instanceof BillingError) {
+      return Response.json(
+        { error: error.detail.code, billing: error.detail },
+        { status: error.detail.code === "BILLING_UNAVAILABLE" ? 503 : 403 },
+      );
+    }
+    throw error;
   }
 
   const url = new URL(request.url);
@@ -165,21 +167,7 @@ export async function POST(request: Request) {
     );
   }
 
-  // Ingest usage event to Polar (fire-and-forget, don't block response)
-  // polar.events
-  //   .ingest({
-  //     events: [
-  //       {
-  //         name: env.POLAR_METER_VOICE_CREATION,
-  //         externalCustomerId: orgId,
-  //         metadata: {},
-  //         timestamp: new Date(),
-  //       },
-  //     ],
-  //   })
-  //   .catch(() => {
-  //     // Silently fail - don't break the user experience for metering errors
-  //   });
+  await recordVoiceCreationUsage({ orgId, voiceId: createdVoiceId });
 
   return Response.json(
     { name, message: "Voice created successfully" },
