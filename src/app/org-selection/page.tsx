@@ -6,8 +6,8 @@ export default function OrgSelectionPage() {
     <div className="flex min-h-screen items-center justify-center">
       <OrganizationList
         hidePersonal
-        afterCreateOrganizationUrl="/dashboard"
-        afterSelectOrganizationUrl="/dashboard"
+        afterCreateOrganizationUrl="/app"
+        afterSelectOrganizationUrl="/app"
         appearance={{
           elements: {
             rootBox: "mx-auto",

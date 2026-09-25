@@ -1,46 +1,45 @@
-
-import { DotField } from "@/features/marketing/components/dot-field";
+import { cn } from "@/lib/utils";
+import { VOICE_SAMPLES } from "@/features/marketing/data/site";
 import { AuthLink } from "@/features/marketing/components/auth-link";
+import { Reveal } from "@/features/marketing/components/reveal";
+import { VoicePortrait } from "@/features/marketing/components/voice-portrait";
+import { BUTTON_PRIMARY, BUTTON_SECONDARY } from "@/features/marketing/lib/ui";
 
 export function FinalCta() {
   return (
-    <section className="px-5 pt-10 pb-24 sm:px-8 sm:pb-32">
-      <div>
-        <div className="mk-hairline relative mx-auto max-w-6xl overflow-hidden rounded-3xl border border-mk-border bg-mk-elevated/60 px-6 py-16 text-center sm:px-12 sm:py-20">
-          <div
-            aria-hidden="true"
-            className="mk-drift pointer-events-none absolute -bottom-32 left-1/2 h-[420px] w-[720px] -translate-x-1/2 rounded-full opacity-70 blur-[90px]"
-            style={{
-              background: "var(--mk-bloom)",
-              ["--drift-duration" as string]: "22s",
-            }}
-          />
-          <DotField className="opacity-40" size={4} amplitude={34} />
-          <div className="relative">
-            <h2 className="mx-auto max-w-2xl text-[2rem] leading-[1.1] font-semibold tracking-[-0.03em] text-balance sm:text-5xl">
-              Hear your own script in about ten seconds.
-            </h2>
-            <p className="mx-auto mt-5 max-w-lg text-[15px] leading-relaxed text-pretty text-mk-muted">
-              Sign up, paste a paragraph, pick a voice. The free tier is enough
-              to know whether Sonic belongs in your pipeline.
-            </p>
-            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <AuthLink
-                href="/sign-up"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-mk-fg px-5 py-3.5 text-[14px] font-medium text-mk-bg transition-transform duration-200 hover:scale-[1.03] active:scale-95 sm:w-auto"
-              >
-                Start free
-              </AuthLink>
-              <AuthLink
-                href="/sign-in"
-                className="inline-flex w-full items-center justify-center rounded-xl border border-mk-border bg-mk-fill px-5 py-3.5 text-[14px] text-mk-fg transition-colors hover:bg-mk-fill-strong sm:w-auto"
-              >
-                Sign in
-              </AuthLink>
-            </div>
-          </div>
+    <section className="pt-8 pb-28 sm:pb-36">
+      <Reveal className="mx-auto max-w-3xl px-5 text-center sm:px-8">
+        {/* The cast, waiting: the page closes on the people it opened with. */}
+        <div className="flex justify-center -space-x-3">
+          {VOICE_SAMPLES.map((voice) => (
+            <VoicePortrait
+              key={voice.id}
+              photo={voice.photo}
+              name={voice.name}
+              size={52}
+              decorative
+              className="size-[52px] ring-4 ring-white"
+            />
+          ))}
         </div>
-      </div>
+
+        <h2 className="mt-8 text-[2.25rem] leading-[1.06] font-semibold tracking-[-0.035em] text-balance text-mk-fg sm:text-[3rem]">
+          Your script is ready to be heard.
+        </h2>
+        <p className="mx-auto mt-5 max-w-md text-[17px] leading-relaxed text-pretty text-mk-muted">
+          Start with 10,000 free characters a month. Choose a plan when you
+          need more.
+        </p>
+
+        <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <AuthLink href="/sign-up" className={cn(BUTTON_PRIMARY, "h-12 px-6 text-[15px]")}>
+            Start free
+          </AuthLink>
+          <a href="/pricing" className={cn(BUTTON_SECONDARY, "h-12 px-6 text-[15px]")}>
+            Compare plans
+          </a>
+        </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,26 +1,29 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Coins } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import {
-  COST_PER_UNIT,
-  TEXT_MAX_LENGTH
-} from "@/features/text-to-speech/data/constants";
+import { TEXT_MAX_LENGTH } from "@/features/text-to-speech/data/constants";
+import { useEntitlement } from "@/features/billing/hooks/use-entitlement";
 
 export function TextInputPanel() {
   const [text, setText] = useState("");
   const router = useRouter();
+  const { balance, canSpend } = useEntitlement();
+
+  const fits = canSpend(text.length);
 
   const handleGenerate = () => {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    router.push(`/text-to-speech?text=${encodeURIComponent(trimmed)}`);
+    router.push(`/app/text-to-speech?text=${encodeURIComponent(trimmed)}`);
   };
 
   return (
@@ -42,19 +45,24 @@ export function TextInputPanel() {
           {/* Bottom info */}
 
           <div className="flex items-center justify-between">
-            <Badge variant="outline" className="gap-1.5 border-dashed">
-              <Coins className="size-3 text-chart-5" />
-              <span className="text-xs">
-                {text.length === 0 ? (
-                  "Start typing to estimate"
-                ) : (
-                  <>
-                    <span className="tabular-nums">
-                      ${(text.length * COST_PER_UNIT).toFixed(4)}
-                    </span>{" "}
-                    estimated
-                  </>
+            <Badge
+              variant="outline"
+              className={cn(
+                "gap-1.5 border-dashed",
+                !fits && "border-destructive/50 text-destructive",
+              )}
+            >
+              <Coins
+                className={cn(
+                  "size-3",
+                  fits ? "text-chart-5" : "text-destructive",
                 )}
+              />
+              <span className="text-xs">
+                <span className="tabular-nums">
+                  {balance.toLocaleString()}
+                </span>{" "}
+                characters left
               </span>
             </Badge>
             <span className="text-xs text-muted-foreground">
@@ -66,14 +74,20 @@ export function TextInputPanel() {
         {/* Action bar */}
 
         <div className="flex items-center justify-end p-3">
-          <Button
-            size="sm"
-            disabled={!text.trim()}
-            onClick={handleGenerate}
-            className="w-full lg:w-auto"
-          >
-            Generate speech
-          </Button>
+          {fits ? (
+            <Button
+              size="sm"
+              disabled={!text.trim()}
+              onClick={handleGenerate}
+              className="w-full lg:w-auto"
+            >
+              Generate speech
+            </Button>
+          ) : (
+            <Button asChild size="sm" className="w-full lg:w-auto">
+              <Link href="/pricing">Upgrade to generate</Link>
+            </Button>
+          )}
         </div>
       </div>
     </div>

@@ -13,6 +13,11 @@ import { VoicePortrait } from "@/features/marketing/components/voice-portrait";
 /** Lets other sections hand a voice to the player without shared state. */
 export const SELECT_VOICE_EVENT = "sonic:select-voice";
 
+export interface SelectVoiceDetail {
+  id: string;
+  autoplay?: boolean;
+}
+
 function formatTime(seconds: number) {
   if (!Number.isFinite(seconds)) return "0:00";
   const whole = Math.floor(seconds);
@@ -40,6 +45,10 @@ export function DemoStudio() {
   const timeRef = useRef<HTMLSpanElement>(null);
   const frameRef = useRef(0);
   const ariaTickRef = useRef(0);
+  // Set when another section asks for a voice to be played, consumed by the
+  // reset effect once the new source is in the DOM.
+  const autoplayRef = useRef(false);
+  const voiceIdRef = useRef(voiceId);
 
   const voice = useMemo(
     () => VOICE_SAMPLES.find((v) => v.id === voiceId) ?? VOICE_SAMPLES[0],
@@ -86,6 +95,7 @@ export function DemoStudio() {
 
   // Reset the transport whenever the selected voice changes.
   useEffect(() => {
+    voiceIdRef.current = voiceId;
     const audio = audioRef.current;
     if (!audio) return;
     audio.pause();
@@ -95,6 +105,16 @@ export function DemoStudio() {
     setAriaProgress(0);
     paint(0);
     if (timeRef.current) timeRef.current.textContent = "0:00";
+
+    if (autoplayRef.current) {
+      autoplayRef.current = false;
+      // Browsers that refuse playback outside the click itself leave the
+      // voice loaded and in view; one more press plays it.
+      audio
+        .play()
+        .then(() => setPlaying(true))
+        .catch(() => setPlaying(false));
+    }
   }, [voiceId, paint]);
 
   const toggle = useCallback(async () => {
@@ -169,127 +189,75 @@ export function DemoStudio() {
   // state into a provider for a single interaction.
   useEffect(() => {
     const onExternalSelect = (event: Event) => {
-      const id = (event as CustomEvent<string>).detail;
-      if (VOICE_SAMPLES.some((v) => v.id === id)) setVoiceId(id);
+      const detail = (event as CustomEvent<SelectVoiceDetail | string>).detail;
+      const { id, autoplay } =
+        typeof detail === "string" ? { id: detail, autoplay: false } : detail;
+      if (!VOICE_SAMPLES.some((v) => v.id === id)) return;
+
+      if (id === voiceIdRef.current) {
+        // Same voice: no source change will trigger the reset effect.
+        if (autoplay && audioRef.current?.paused) void toggle();
+        return;
+      }
+      autoplayRef.current = Boolean(autoplay);
+      setVoiceId(id);
     };
     window.addEventListener(SELECT_VOICE_EVENT, onExternalSelect);
     return () => window.removeEventListener(SELECT_VOICE_EVENT, onExternalSelect);
-  }, []);
+  }, [toggle]);
 
   return (
-    <div ref={cardRef} className="mk-hairline relative overflow-hidden rounded-[20px] border border-mk-border bg-mk-elevated/70 shadow-[0_40px_120px_-40px_var(--mk-studio-shadow)] backdrop-blur-xl">
-      {/* Chrome bar */}
-      <div className="flex items-center justify-between gap-3 border-b border-mk-border px-4 py-3 sm:px-5">
-        <div className="flex items-center gap-2">
-          <span className="size-2 rounded-full bg-mk-track" />
-          <span className="size-2 rounded-full bg-mk-track" />
-          <span className="size-2 rounded-full bg-mk-track" />
-        </div>
-        <p className="mk-label">
-          Sonic studio
-        </p>
-        <div className="flex items-center gap-1.5">
-          <span
-            className={cn(
-              "size-1.5 rounded-full transition-colors",
-              playing ? "bg-emerald-400" : "bg-mk-track",
-            )}
+    <div
+      ref={cardRef}
+      className="mk-lift overflow-hidden rounded-[24px] border border-mk-border bg-white text-left"
+    >
+      <div className="grid gap-6 p-5 sm:p-7 lg:grid-cols-[208px_minmax(0,1fr)] lg:gap-10 lg:p-9">
+        {/* Who is speaking */}
+        <div className="flex items-center gap-4 lg:block">
+          <VoicePortrait
+            key={voice.id}
+            photo={voice.photo}
+            name={voice.name}
+            size={208}
+            shape="rounded"
+            priority
+            className="size-16 sm:size-20 lg:size-[208px] lg:rounded-[20px]"
           />
-          <span className="hidden text-[11px] text-mk-faint sm:inline">
-            {playing ? "playing" : "idle"}
-          </span>
-        </div>
-      </div>
-
-      <div className="grid min-w-0 gap-0 lg:grid-cols-[minmax(0,260px)_minmax(0,1fr)]">
-        {/* Voice picker: a rail on desktop, a horizontal scroller on phones. */}
-        <div className="min-w-0 border-mk-border lg:border-r">
-          <p className="px-4 pt-4 pb-2 mk-label sm:px-5">
-            Voices
-          </p>
-          <div
-            role="radiogroup"
-            aria-label="Demo voice"
-            className="flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-4 sm:px-5 lg:flex-col lg:gap-1 lg:overflow-visible lg:px-2 lg:pb-3"
-          >
-            {VOICE_SAMPLES.map((v) => {
-              const active = v.id === voice.id;
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  onClick={() => selectVoice(v.id)}
-                  className={cn(
-                    "group flex min-w-[164px] shrink-0 snap-start items-center gap-3 rounded-xl border px-3 py-2.5 text-left transition-all duration-300 lg:w-full lg:min-w-0",
-                    active
-                      ? "border-mk-accent/45 bg-mk-accent/12"
-                      : "border-transparent hover:border-mk-border-strong hover:bg-mk-fill",
-                  )}
-                >
-                  <span className="relative flex shrink-0">
-                    <VoicePortrait
-                      photo={v.photo}
-                      name={v.name}
-                      active={active}
-                      size={36}
-                      priority
-                      className="size-9"
-                    />
-                    {active && playing && (
-                      <span className="absolute -right-0.5 -bottom-0.5 flex size-4 items-center justify-center rounded-full bg-mk-accent text-mk-bg ring-2 ring-mk-elevated">
-                        <EqualizerIcon />
-                      </span>
-                    )}
-                  </span>
-                  <span className="min-w-0">
-                    <span
-                      className={cn(
-                        "block truncate text-[13px] font-medium",
-                        active ? "text-mk-fg" : "text-mk-muted",
-                      )}
-                    >
-                      {v.name}
-                    </span>
-                    <span className="block truncate text-[11px] text-mk-faint">
-                      {v.accent}
-                    </span>
-                  </span>
-                </button>
-              );
-            })}
+          <div className="min-w-0 lg:mt-5">
+            <p className="text-[17px] font-semibold tracking-tight text-mk-fg">
+              {voice.name}
+            </p>
+            <p className="mt-0.5 text-[14px] text-mk-muted">
+              {voice.accent} accent
+            </p>
+            <span className="mt-2.5 inline-flex rounded-full bg-mk-fill px-2.5 py-1 text-[12px] font-medium text-mk-muted">
+              {voice.category}
+            </span>
           </div>
         </div>
 
-        {/* Transcript, waveform and transport */}
-        <div className="flex min-w-0 flex-col justify-center gap-5 p-4 sm:p-5 lg:p-6">
+        {/* What they say, and the transport */}
+        <div className="flex min-w-0 flex-col justify-between gap-8">
           <div>
-            <p className="mk-label">
-              Script
+            <p className="mk-label">Script</p>
+            <p className="mt-3 text-[19px] leading-[1.55] tracking-[-0.01em] text-pretty text-mk-fg sm:text-[22px]">
+              &ldquo;{voice.script}&rdquo;
             </p>
-            <p
-              key={voice.id}
-              className="reveal mt-2 text-pretty text-[15px] leading-relaxed text-mk-fg/90 sm:text-base"
-              data-shown="true"
-            >
-              {voice.script}
-            </p>
-            <p className="mt-2 text-[13px] text-mk-faint">{voice.tagline}</p>
+            <p className="mt-3 text-[14px] text-mk-faint">{voice.tagline}</p>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-4">
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={toggle}
               aria-label={playing ? `Pause ${voice.name}` : `Play ${voice.name}`}
-              className="relative flex size-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-mk-accent-soft to-mk-accent-deep text-white transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-mk-accent-soft focus-visible:ring-offset-2 focus-visible:ring-offset-mk-bg focus-visible:outline-none active:scale-95 sm:size-14"
+              className="relative flex size-12 shrink-0 cursor-pointer items-center justify-center rounded-full bg-mk-brand-deep text-white transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-mk-accent focus-visible:ring-offset-2 focus-visible:outline-none active:scale-95 sm:size-14"
             >
-              {/* Pulse ring, only while playing. */}
+              {/* Sound is orange: the ring only appears while audio plays. */}
               {playing && (
                 <span
                   aria-hidden="true"
-                  className="absolute inset-0 rounded-full bg-mk-accent/60"
+                  className="absolute inset-0 rounded-full bg-mk-brand/45"
                   style={{ animation: "mk-pulse-ring 2s ease-out infinite" }}
                 />
               )}
@@ -304,7 +272,7 @@ export function DemoStudio() {
               </span>
             </button>
 
-            <div className="h-14 min-w-0 flex-1 sm:h-16">
+            <div className="h-12 min-w-0 flex-1 sm:h-14">
               <Waveform
                 ref={progressRef}
                 peaks={peaks}
@@ -315,30 +283,54 @@ export function DemoStudio() {
               />
             </div>
 
-            <div className="mk-num shrink-0 text-right text-[11px] text-mk-faint sm:text-xs">
+            <div className="mk-num shrink-0 text-right text-[12px] text-mk-faint">
               <span ref={timeRef}>0:00</span>
-              <span className="text-mk-faint/60"> / {formatTime(duration)}</span>
+              <span> / {formatTime(duration)}</span>
             </div>
           </div>
-
-          {/* The generation parameters that produced this take. */}
-          <div className="flex flex-wrap gap-1.5 border-t border-mk-border pt-4">
-            {[
-              ["temperature", voice.params.temperature],
-              ["top_p", voice.params.topP],
-              ["top_k", voice.params.topK],
-              ["rep_penalty", voice.params.repetitionPenalty],
-            ].map(([key, value]) => (
-              <span
-                key={key as string}
-                className="rounded-md border border-mk-border bg-mk-fill px-2 py-1 font-mono text-[11px] text-mk-faint"
-              >
-                {key}
-                <span className="text-mk-accent-soft"> {value}</span>
-              </span>
-            ))}
-          </div>
         </div>
+      </div>
+
+      {/* The cast. A radio group: exactly one voice is loaded at a time. */}
+      <div
+        role="radiogroup"
+        aria-label="Choose a voice"
+        className="flex gap-2 overflow-x-auto border-t border-mk-border bg-mk-fill-faint px-5 py-4 sm:px-7 lg:px-9"
+      >
+        {VOICE_SAMPLES.map((v) => {
+          const active = v.id === voice.id;
+          return (
+            <button
+              key={v.id}
+              type="button"
+              role="radio"
+              aria-checked={active}
+              onClick={() => selectVoice(v.id)}
+              className={cn(
+                "flex min-h-11 shrink-0 cursor-pointer items-center gap-2.5 rounded-full border py-1.5 pr-4 pl-1.5 text-[14px] transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-mk-accent focus-visible:outline-none",
+                active
+                  ? "mk-contact border-mk-border-strong bg-white font-medium text-mk-fg"
+                  : "border-transparent text-mk-muted hover:bg-white hover:text-mk-fg",
+              )}
+            >
+              <span className="relative">
+                <VoicePortrait
+                  photo={v.photo}
+                  name={v.name}
+                  size={32}
+                  decorative
+                  className="size-8"
+                />
+                {active && playing && (
+                  <span className="absolute -right-1 -bottom-1 flex size-4 items-center justify-center rounded-full bg-mk-brand-deep text-white ring-2 ring-white">
+                    <EqualizerIcon />
+                  </span>
+                )}
+              </span>
+              {v.name}
+            </button>
+          );
+        })}
       </div>
 
       <audio
@@ -360,7 +352,7 @@ export function DemoStudio() {
   );
 }
 
-/** Three bars bouncing in a loop, used as the "now playing" affordance. */
+/** Three bars bouncing in a loop: the "now playing" mark on the active voice. */
 function EqualizerIcon() {
   return (
     <span aria-hidden="true" className="flex h-2 items-end gap-[1.5px]">
