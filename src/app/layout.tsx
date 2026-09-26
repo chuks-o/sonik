@@ -9,6 +9,7 @@ import { Toaster } from "sonner";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCReactProvider } from "@/trpc/client";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { env } from "@/lib/env";
 
 // Product UI keeps Inter; the marketing site deliberately does not use it.
 // `preload: false` keeps the marketing page from fetching a face it never
@@ -40,6 +41,10 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  // Social platforms need absolute URLs for the link preview image. Set
+  // APP_URL to the production domain in production, or previews point at
+  // localhost and render blank.
+  metadataBase: new URL(env.APP_URL),
   title: {
     default: "Sonic",
     template: "%s | Sonic",
