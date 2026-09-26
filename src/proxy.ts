@@ -6,6 +6,11 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/pricing",
+  // Link preview images. They have no file extension, so the matcher below
+  // does not skip them, and without this every crawler (X, LinkedIn, Slack)
+  // is redirected to sign-in and the preview renders blank.
+  "/opengraph-image(.*)",
+  "/twitter-image(.*)",
 ]);
 
 const isOrgSelectionRoute = createRouteMatcher(["/org-selection(.*)"]);
